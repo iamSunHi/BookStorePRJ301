@@ -1,0 +1,40 @@
+@import url("../css/navbar.css");
+@import url("../css/animation.css");
+html {
+  font-size: 62.5%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+main {
+  margin-top: 60px;
+  display: none;
+}
+
+.welcome-modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+}
+
+.welcome-modal h1 {
+  margin: auto;
+  position: relative;
+}
+
+.welcome-modal h1::after {
+  content: "";
+  border: 1px solid #fff;
+  animation: blink 2s infinite;
+}
