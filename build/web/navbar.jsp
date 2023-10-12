@@ -75,32 +75,24 @@
                 <% } %>
             </ul>
             <div class="col-lg-6 navbar-nav d-none d-lg-flex justify-content-between align-items-center">
-                <div class="navbar-search">
+                <div class="navbar-search" onblur="hideSearchResults(this);">
                     <div class="navbar-search-bar p-2 d-flex align-items-center bg-dark">
                         <div class="navbar-search__input d-flex align-items-center">
                             <i class="fa-solid fa-magnifying-glass p-2 rounded-circle bg-light text-dark"></i>
-                            <input type="text" class="w-100 border-0 bg-dark mx-2" placeholder="">
+                            <input id="searchInput" type="text" class="w-100 border-0 bg-dark mx-2" placeholder="Search something . . ." onkeyup="showSearchResults(this);">
                         </div>
                         <button class="btn btn-dark rounded-pill">
                             Search
                         </button>
                     </div>
                     <div class="navbar-search__result bg-dark shadow">
+                        <div class="text-center py-2">
+                            <svg class="wrapper" viewBox="25 25 50 50">
+                            <circle r="20" cy="50" cx="50"></circle>
+                            </svg>
+                        </div>
                         <div class="navbar-search__result--has-result">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action border-0">
-                                    Book 1
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action border-0">
-                                    Combo Sách Ehon Nhật Bản Bìa Cứng - Tiệm Bánh Mỳ Lừng Danh + Tiệm
-                                    Súp Lừng Danh + Tiệm Mật Ong Lừng (Danh Bộ 3 Cuốn)
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action border-0">
-                                    Book 3
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action border-0">
-                                    Book 4
-                                </a>
                             </div>
                         </div>
                         <div class="navbar-search__result--no-result text-center">
@@ -282,6 +274,63 @@
                                                             window.location.href = 'cart?method=remove&bookId=' + bookId;
                                                         }
                                                     });
+                                                }
+
+                                                let debounceTimer;
+
+                                                function debounceSearch() {
+                                                    clearTimeout(debounceTimer);
+                                                    document.querySelector(".navbar-search__result--has-result .list-group").innerHTML = "";
+                                                    document.querySelector('.navbar-search__result--no-result').removeAttribute('style');
+                                                    document.querySelector(".wrapper").setAttribute('style', 'display: inline');
+                                                    debounceTimer = setTimeout(performSearch, 300);
+                                                }
+
+                                                function performSearch() {
+                                                    const searchTerm = document.getElementById("searchInput").value;
+                                                    const resultElement = document.querySelector(".navbar-search__result--has-result .list-group");
+
+                                                    if (searchTerm !== "") {
+                                                        // AJAX
+                                                        var request = new XMLHttpRequest();
+                                                        request.open("GET", "book?method=search&content=" + searchTerm);
+
+                                                        request.onreadystatechange = function () {
+                                                            document.querySelector(".wrapper").removeAttribute('style');
+                                                            if (this.readyState === 4 && this.status === 200) {
+                                                                var response = JSON.parse(this.responseText);
+                                                                if (response.length > 0) {
+                                                                    document.querySelector('.navbar-search__result--no-result').removeAttribute('style');
+                                                                    response.forEach(book => {
+                                                                        resultElement.innerHTML += "<a href=book?method=get&bookId=" + book.id + " class='list-group-item list-group-item-action border-0'>" + book.title + "</a>";
+                                                                    });
+                                                                } else {
+                                                                    document.querySelector('.navbar-search__result--no-result').setAttribute('style', 'display: block');
+                                                                }
+                                                            }
+                                                        };
+
+                                                        // Gửi yêu cầu đến máy chủ
+                                                        request.send();
+                                                    } else {
+                                                        document.querySelector(".wrapper").removeAttribute('style');
+                                                    }
+                                                }
+                                                const searchBar = document.querySelector('.navbar-search-bar');
+                                                const searchResults = document.querySelector('.navbar-search__result');
+                                                function showSearchResults(e) {
+                                                    const searchInput = e.value;
+                                                    if (searchInput !== '') {
+                                                        debounceSearch();
+                                                        searchBar.classList.add('active');
+                                                        searchResults.classList.add('active');
+                                                    } else {
+                                                        hideSearchResults();
+                                                    }
+                                                }
+                                                function hideSearchResults() {
+                                                    searchBar.classList.remove('active');
+                                                    searchResults.classList.remove('active');
                                                 }
 
 </script>

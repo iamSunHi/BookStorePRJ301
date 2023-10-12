@@ -24,6 +24,8 @@ import javax.naming.NamingException;
 import models.Book;
 import models.Category;
 import models.CoverType;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -79,6 +81,31 @@ public class BookController extends HttpServlet {
                     } catch (NamingException ex) {
                         Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    return;
+                }
+                case "search": {
+                    BookDAO bookDAO = new BookDAO();
+                    List<Book> bookList = null;
+                    try {
+                        bookList = bookDAO.search(request.getParameter("content"));
+                    } catch (NamingException ex) {
+                        Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    JSONArray searchResult = new JSONArray();
+                    for (Book book : bookList) {
+                        JSONObject data = new JSONObject();
+                        data.put("id", book.getId());
+                        data.put("title", book.getTitle());
+                        searchResult.put(data);
+                    }
+                    JSONObject data = new JSONObject();
+                    data.put("searchResult", searchResult);
+
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(searchResult.toString());
+
                     return;
                 }
                 case "category": {

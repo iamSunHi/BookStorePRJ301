@@ -38,14 +38,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row d-flex align-items-center pb-3">
-                            <div class="text-end">
-                                <a class="btn btn-light" data-bs-toggle="modal" data-bs-target="#create">
-                                    <i class="fa-solid fa-circle-plus"></i>
-                                    New User
-                                </a>
-                            </div>
-                        </div>
                     <% if (request.getAttribute("UserList") != null && ((List<User>) request.getAttribute("UserList")).size() >=1) { %>
                     <%
                         List<User> userList = (List<User>) request.getAttribute("UserList");
@@ -239,13 +231,12 @@
 
                                                 document.querySelector('#' + actionType.trim().toLowerCase() + ' .userId').value = userId;
                                                 document.querySelector('#' + actionType.trim().toLowerCase() + ' #userName').value = userName;
-                                                
+
                                                 const roleList = document.querySelectorAll('#' + actionType.trim().toLowerCase() + ' .userRoles option');
                                                 for (let i = 0; i < roleList.length; i++) {
                                                     if (userRoles.includes(roleList[i].innerText)) {
                                                         roleList[i].setAttribute("selected", "");
-                                                    }
-                                                    else {
+                                                    } else {
                                                         roleList[i].removeAttribute("selected");
                                                     }
                                                 }

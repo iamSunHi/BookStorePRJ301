@@ -205,6 +205,46 @@ public class BookDAO {
         return bookList;
     }
 
+    public List<Book> search(String searchContent) throws NamingException {
+        List<Book> bookList = new ArrayList<>();
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "SELECT Id, Title FROM dbo.Books WHERE Title LIKE N'%" + searchContent + "%'";
+            stmt = connection.prepareStatement(SQL);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setId(rs.getInt("Id"));
+                book.setTitle(rs.getString("Title"));
+
+                bookList.add(book);
+            }
+
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return bookList;
+    }
+
     public Book getBookById(int bookId) throws NamingException {
         Book book = null;
 
