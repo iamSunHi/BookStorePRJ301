@@ -54,12 +54,12 @@ nav #logo-img {
     top: 100%;
     left: 0;
     right: 0;
-    min-height: 20px;
     border: 1px solid #495057;
     border-radius: 20px;
     border-top: none;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    padding-bottom: 20px;
 }
 
 .navbar-search__result::before {
@@ -73,13 +73,8 @@ nav #logo-img {
 }
 
 .navbar-search__result--has-result {
-    margin: 0 20px;
     max-height: 200px;
     overflow-y: scroll;
-}
-
-.navbar-search__result--has-result::-webkit-scrollbar {
-    display: none;
 }
 
 .navbar-search__result--has-result a {
@@ -90,11 +85,6 @@ nav #logo-img {
     max-height: 30px;
     padding-left: 20px;
     padding-right: 20px;
-}
-
-.navbar-search__result--has-result a:last-child {
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
 }
 
 .navbar-search__result--no-result {
