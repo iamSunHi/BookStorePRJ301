@@ -108,14 +108,45 @@ public class BookController extends HttpServlet {
 
                     return;
                 }
+                case "pagination": {
+                    int pageSize = 8;
+                    int offset = (Integer.parseInt(request.getParameter("page")) - 1) * pageSize;
+
+                    BookDAO bookDAO = new BookDAO();
+                    List<Book> bookList = null;
+                    try {
+                        bookList = bookDAO.getBookWithPagination(pageSize, offset);
+                    } catch (NamingException ex) {
+                        Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    JSONArray pagination = new JSONArray();
+                    for (Book book : bookList) {
+                        JSONObject data = new JSONObject();
+                        data.put("id", book.getId());
+                        data.put("title", book.getTitle());
+                        data.put("author", book.getAuthor());
+                        data.put("price", book.getPrice());
+                        data.put("imageUrl", book.getImageUrl());
+                        pagination.put(data);
+                    }
+                    JSONObject data = new JSONObject();
+                    data.put("pagination", pagination);
+
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(pagination.toString());
+
+                    return;
+                }
                 case "category": {
                     try {
                         this.getBookByCategory(request, response);
                     } catch (NamingException ex) {
                         Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    return;
                 }
-                return;
                 case "seller": {
                     BookDAO bookDAO = new BookDAO();
                     {
@@ -206,7 +237,7 @@ public class BookController extends HttpServlet {
             }
         }
 
-        session.setAttribute("BookList", bookList);
+        session.setAttribute("bookList", bookList);
         session.setAttribute("currentPage", Integer.parseInt(request.getParameter("page")));
         response.sendRedirect("home.jsp");
     }

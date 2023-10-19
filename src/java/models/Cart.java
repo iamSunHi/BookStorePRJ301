@@ -4,13 +4,14 @@
  */
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Nhật Huy
  */
-public class Cart {
+public class Cart implements Serializable {
     private int id;
     private String userId;
     private ArrayList<Book> bookList;

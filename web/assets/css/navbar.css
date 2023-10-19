@@ -271,7 +271,7 @@ nav #logo-img {
     transform: scale(0.95, 0.95);
 }
 
-svg {
+.wrapper {
     display: none;
     width: 3.25em;
     transform-origin: center;

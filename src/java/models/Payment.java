@@ -4,13 +4,14 @@
  */
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Nhật Huy
  */
-public class Payment {
+public class Payment implements Serializable {
     private int id;
     private int name;
     

@@ -4,13 +4,14 @@
  */
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Nhật Huy
  */
-public class Store {
+public class Store implements Serializable {
     private int id;
     private String userId;
     private String name;

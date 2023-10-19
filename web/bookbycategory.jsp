@@ -26,7 +26,7 @@
     </head>
 
     <body>
-        <% if (session.getAttribute("BookList") == null) { %>
+        <% if (session.getAttribute("bookList") == null) { %>
         <jsp:forward page="book?page=1"></jsp:forward>
         <% } %>
         <jsp:include page="navbar.jsp"></jsp:include>

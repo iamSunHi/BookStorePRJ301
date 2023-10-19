@@ -4,11 +4,13 @@
  */
 package models;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Nhật Huy
  */
-public class Category {
+public class Category implements Serializable {
     private int id;
     private String name;
 
