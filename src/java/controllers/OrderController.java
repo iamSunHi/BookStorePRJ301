@@ -4,8 +4,7 @@
  */
 package controllers;
 
-import dal.CartDAO;
-import dal.UserDAO;
+import dal.OrderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,19 +12,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
 import models.Cart;
-import models.Role;
+import models.OrderDetail;
+import models.OrderHeader;
 import models.User;
 
 /**
  *
- * @author Nhật Huy
+ * @author Sun Hi
  */
-public class IdentityController extends HttpServlet {
+public class OrderController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,10 +45,10 @@ public class IdentityController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet IdentityController</title>");
+            out.println("<title>Servlet OrderController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet IdentityController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OrderController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -65,14 +66,7 @@ public class IdentityController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (request.getParameter("type").equals("LOGOUT")) {
-            session.removeAttribute("user");
-            session.removeAttribute("userCart");
-            session.removeAttribute("isAdmin");
-            session.removeAttribute("isSeller");
-        }
-        response.sendRedirect("home.jsp");
+        processRequest(request, response);
     }
 
     /**
@@ -86,62 +80,35 @@ public class IdentityController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = new User();
-        UserDAO userDAO = new UserDAO();
         HttpSession session = request.getSession();
-        boolean isAdmin = false;
-        boolean isSeller = false;
+        User user = (User) session.getAttribute("user");
+        Cart cart = (Cart) session.getAttribute("userCart");
 
-        switch (request.getParameter("type")) {
-            case "REGISTER": {
-                user.setUsername(request.getParameter("username"));
-                user.setName(request.getParameter("fullname"));
-                user.setEmail(request.getParameter("email"));
-                user.setPhone(request.getParameter("phone"));
-                user.setPassword(request.getParameter("password"));
-                user.setImageUrl("profile-no-image.jfif");
-                try {
-                    if (userDAO.register(user)) {
-                        user = userDAO.login(request.getParameter("username"), request.getParameter("password"));
-                    }
-                } catch (NamingException ex) {
-                    Logger.getLogger(IdentityController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
-            }
-            case "LOGIN": {
-                try {
-                    user = userDAO.login(request.getParameter("username"), request.getParameter("password"));
-                } catch (NamingException ex) {
-                    Logger.getLogger(IdentityController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (user != null) {
-                    for (Role role : user.getRoleList()) {
-                        if (role.getName().toLowerCase().equals("admin")) {
-                            isAdmin = true;
-                        } else if (role.getName().toLowerCase().equals("seller")) {
-                            isSeller = true;
-                        }
-                    }
-                }
-                break;
-            }
-        }
+        OrderDAO orderDAO = new OrderDAO();
 
-        CartDAO cartDAO = new CartDAO();
-
+        OrderHeader orderHeader = new OrderHeader();
+        orderHeader.setUser(user);
+        orderHeader.setOrderDate(Date.from(Instant.now()));
+        orderHeader.setPayment("Stripe");
+        orderHeader.setOrderStatus("Pending");
+        orderHeader.setPaymentStatus("Pending");
         try {
-            Cart userCart = cartDAO.get(user.getId());
-            session.setAttribute("userCart", userCart);
+            orderDAO.createOrderHeader(orderHeader);
         } catch (NamingException ex) {
-            Logger.getLogger(IdentityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        session.setAttribute("user", user);
-        session.setAttribute("isAdmin", isAdmin);
-        session.setAttribute("isSeller", isSeller);
-
-        response.sendRedirect("home.jsp");
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setOrderHeader(orderHeader);
+        orderDetail.setBooks(cart.getBookList());
+        cart.getBookList().forEach(book -> {
+            orderDetail.setTotalPrice(orderDetail.getTotalPrice() + book.getPrice());
+        });
+        try {
+            orderDAO.createOrderDetail(orderDetail);
+        } catch (NamingException ex) {
+            Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

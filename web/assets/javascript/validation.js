@@ -82,6 +82,7 @@ $().ready(function () {
             },
         },
     });
+    
     $("#login-info").validate({
         onfocusout: false,
         onkeyup: false,
@@ -113,6 +114,42 @@ $().ready(function () {
                 required: "Required!",
                 equalTo: "The passwords must be same.",
             },
+        },
+    });
+    
+    $("#order").validate({
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        rules: {
+            name: {
+                required: true,
+                rangelength: [6, 50],
+            },
+            email: {
+                email: true,
+                required: true,
+            },
+            phone: {
+                required: true,
+            },
+            address: {
+                required: true,
+            }
+        },
+        messages: {
+            name: {
+                required: "The Name field is required!",
+            },
+            email: {
+                required: "The Email field is required!",
+            },
+            phone: {
+                required: "The PhoneNumber field is required!",
+            },
+            address: {
+                required: "The Address field is required!",
+            }
         },
     });
 });

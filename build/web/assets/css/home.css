@@ -51,3 +51,7 @@ html {
   white-space: nowrap;
   line-height: 40px;
 }
+
+.page-item {
+    cursor: pointer;
+}

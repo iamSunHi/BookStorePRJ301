@@ -156,9 +156,9 @@
                                 <% } %>
                             </div>
                             <div class="shopping-cart__wrapper__footer">
-                                <button class="btn btn-dark shopping-cart__wrapper__footer__order">
+                                <a class="btn btn-dark shopping-cart__wrapper__footer__order" href="summary.jsp">
                                     <h5 class="m-0">Order</h5>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>

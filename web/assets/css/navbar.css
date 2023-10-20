@@ -235,6 +235,10 @@ nav #logo-img {
     text-transform: uppercase;
 }
 
+.error {
+    color: #FF0000!important;
+}
+
 .menu {
     background-color: #0d1117;
 }

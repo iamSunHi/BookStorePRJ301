@@ -221,8 +221,3 @@ input:-webkit-autofill:focus {
     border: none;
     outline: none;
 }
-
-.error {
-    color: #FF0000!important;
-    top: 50% !important;
-}

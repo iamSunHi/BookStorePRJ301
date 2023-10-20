@@ -163,7 +163,7 @@
                                                             <div class="card-body">
                                                                 <a href="book?method=get&amp;bookId=` + response[i].id + `"></a>
                                                                 <a href="book?method=get&amp;bookId=` + response[i].id + `" class="card-title book-list-item__title fs-4 text-decoration-none">
-                                                                    Git Pocket Guide
+                                                                    ` + response[i].title + `
                                                                 </a>
                                                                 <div class="d-flex align-items-baseline justify-content-between">
                                                                     <h6 class="card-text book-list-item__author">Author:
