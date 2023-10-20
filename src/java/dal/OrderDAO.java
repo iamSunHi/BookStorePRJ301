@@ -9,7 +9,11 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.naming.NamingException;
+import models.Book;
 import models.OrderDetail;
 import models.OrderHeader;
 
@@ -23,8 +27,8 @@ public class OrderDAO {
     private PreparedStatement stmt = null;
     private ResultSet rs = null;
 
-    public boolean createOrderHeader(OrderHeader orderHeader) throws NamingException {
-        boolean isSuccess = true;
+    public int createOrderHeader(OrderHeader orderHeader) throws NamingException, ParseException {
+        int orderHeaderId = 0;
 
         try {
             // Get connection.
@@ -53,17 +57,28 @@ public class OrderDAO {
                     + "    ?           -- PaymentIntentId - nvarchar(max)\n"
                     + ")";
             stmt = connection.prepareStatement(SQL);
-            stmt.setString(0, orderHeader.getUser().getId());
-            stmt.setString(1, orderHeader.getPayment());
-            stmt.setDate(2, (Date) orderHeader.getOrderDate());
-            stmt.setDate(3, (Date) orderHeader.getPaymentDate());
-            stmt.setString(4, orderHeader.getOrderStatus());
-            stmt.setString(5, orderHeader.getPaymentStatus());
-            stmt.setString(6, orderHeader.getSessionId());
-            stmt.setString(7, orderHeader.getPaymentIntentId());
+            stmt.setString(1, orderHeader.getUser().getId());
+            stmt.setString(2, orderHeader.getPayment());
+            Timestamp orderDate = new Timestamp(orderHeader.getOrderDate().getTime());
+            stmt.setTimestamp(3, orderDate);
+            java.util.Date paymentDate = new java.util.Date(new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01").getTime());
+            Timestamp sqlPaymentDate = new Timestamp(paymentDate.getTime());
+            stmt.setTimestamp(4, sqlPaymentDate);
+            stmt.setString(5, orderHeader.getOrderStatus());
+            stmt.setString(6, orderHeader.getPaymentStatus());
+            stmt.setString(7, orderHeader.getSessionId());
+            stmt.setString(8, orderHeader.getPaymentIntentId());
+
             int numberOfAffectedRows = stmt.executeUpdate();
-            if (numberOfAffectedRows == 0) {
-                isSuccess = false;
+            if (numberOfAffectedRows != 0) {
+                SQL = "SELECT Id FROM dbo.OrderHeaders WHERE OrderDate = ?";
+                stmt = connection.prepareStatement(SQL);
+                stmt.setTimestamp(1, orderDate);
+
+                rs = stmt.executeQuery();
+                if (rs.next()) {
+                    orderHeaderId = rs.getInt("Id");
+                }
             }
         } catch (SQLException ex) {
         } finally {
@@ -81,8 +96,7 @@ public class OrderDAO {
                 }
             }
         }
-
-        return isSuccess;
+        return orderHeaderId;
     }
 
     public boolean createOrderDetail(OrderDetail orderDetail) throws NamingException {
@@ -99,14 +113,42 @@ public class OrderDAO {
                     + "    TotalPrice\n"
                     + ")\n"
                     + "VALUES\n"
-                    + "(   (SELECT Id FROM dbo.OrderHeaders WHERE OrderDate = ?),  -- OrderHeaderId - int\n"
+                    + "(   ?,  -- OrderHeaderId - int\n"
                     + "    ? -- TotalPrice - float\n"
                     + ")";
             stmt = connection.prepareStatement(SQL);
-            stmt.setDate(0, (Date) orderDetail.getOrderHeader().getOrderDate());
-            stmt.setDouble(1, orderDetail.getTotalPrice());
+            stmt.setInt(1, orderDetail.getOrderHeader().getId());
+            stmt.setDouble(2, orderDetail.getTotalPrice());
             int numberOfAffectedRows = stmt.executeUpdate();
-            if (numberOfAffectedRows == 0) {
+            if (numberOfAffectedRows != 0) {
+                SQL = "SELECT Id FROM dbo.OrderDetails WHERE OrderHeaderId = ?";
+                stmt = connection.prepareStatement(SQL);
+                stmt.setInt(0, orderDetail.getOrderHeader().getId());
+                rs = stmt.executeQuery();
+
+                int orderDetailId = 0;
+                if (rs.next()) {
+                    orderDetailId = rs.getInt("Id");
+                }
+                if (orderDetailId != 0) {
+                    for (Book book : orderDetail.getBooks()) {
+                        SQL = "INSERT INTO dbo.BookOrderDetail\n"
+                                + "(\n"
+                                + "    BooksId,\n"
+                                + "    OrderDetailsId\n"
+                                + ")\n"
+                                + "VALUES\n"
+                                + "(   0, -- BooksId - int\n"
+                                + "    0  -- OrderDetailsId - int\n"
+                                + ")";
+                        stmt = connection.prepareStatement(SQL);
+                        stmt.setInt(1, book.getId());
+                        stmt.setInt(2, orderDetailId);
+                    }
+                } else {
+                    isSuccess = false;
+                }
+            } else {
                 isSuccess = false;
             }
         } catch (SQLException ex) {

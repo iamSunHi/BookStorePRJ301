@@ -33,11 +33,11 @@
                         <form action="identity" method="post">
                             <input type="hidden" name="type" value="LOGIN">
                             <div class="user-box">
-                                <input required name="username" type="text">
+                                <input required name="username" type="text" value="adminn">
                                 <label><i class="fa-solid fa-user"></i> Username</label>
                             </div>
                             <div class="user-box">
-                                <input required name="password" type="password">
+                                <input required name="password" type="password" value="Bo_29102003">
                                 <label><i class="fa-solid fa-lock"></i> Password</label>
                             </div>
                             <a href="#" class="w-100">
