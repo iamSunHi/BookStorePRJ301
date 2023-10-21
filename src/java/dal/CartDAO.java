@@ -187,7 +187,7 @@ public class CartDAO {
 
         return isSuccess;
     }
-
+    
     public boolean removeBook(int cartId, int bookId) throws NamingException {
         boolean isSuccess = true;
 
@@ -200,6 +200,43 @@ public class CartDAO {
             stmt = connection.prepareStatement(SQL);
             stmt.setInt(1, cartId);
             stmt.setInt(2, bookId);
+
+            int numberOfAffectedRows = stmt.executeUpdate();
+            if (numberOfAffectedRows == 0) {
+                isSuccess = false;
+            }
+
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return isSuccess;
+    }
+
+    public boolean removeAll(int cartId) throws NamingException {
+        boolean isSuccess = true;
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "DELETE FROM dbo.BookCart WHERE CartsId = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setInt(1, cartId);
 
             int numberOfAffectedRows = stmt.executeUpdate();
             if (numberOfAffectedRows == 0) {

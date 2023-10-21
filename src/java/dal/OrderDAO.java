@@ -5,7 +5,6 @@
 package dal;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -123,7 +122,7 @@ public class OrderDAO {
             if (numberOfAffectedRows != 0) {
                 SQL = "SELECT Id FROM dbo.OrderDetails WHERE OrderHeaderId = ?";
                 stmt = connection.prepareStatement(SQL);
-                stmt.setInt(0, orderDetail.getOrderHeader().getId());
+                stmt.setInt(1, orderDetail.getOrderHeader().getId());
                 rs = stmt.executeQuery();
 
                 int orderDetailId = 0;
@@ -131,24 +130,105 @@ public class OrderDAO {
                     orderDetailId = rs.getInt("Id");
                 }
                 if (orderDetailId != 0) {
+                    SQL = "INSERT INTO dbo.BookOrderDetail\n"
+                            + "(\n"
+                            + "    BooksId,\n"
+                            + "    OrderDetailsId\n"
+                            + ")\n"
+                            + "VALUES\n"
+                            + "(   ?, -- BooksId - int\n"
+                            + "    ?  -- OrderDetailsId - int\n"
+                            + ")";
+                    stmt = connection.prepareStatement(SQL);
                     for (Book book : orderDetail.getBooks()) {
-                        SQL = "INSERT INTO dbo.BookOrderDetail\n"
-                                + "(\n"
-                                + "    BooksId,\n"
-                                + "    OrderDetailsId\n"
-                                + ")\n"
-                                + "VALUES\n"
-                                + "(   0, -- BooksId - int\n"
-                                + "    0  -- OrderDetailsId - int\n"
-                                + ")";
-                        stmt = connection.prepareStatement(SQL);
                         stmt.setInt(1, book.getId());
                         stmt.setInt(2, orderDetailId);
+                        stmt.executeUpdate();
                     }
                 } else {
                     isSuccess = false;
                 }
             } else {
+                isSuccess = false;
+            }
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return isSuccess;
+    }
+
+    public boolean updateStripePaymentId(OrderHeader orderHeader) throws NamingException {
+        boolean isSuccess = true;
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "UPDATE dbo.OrderHeaders \n"
+                    + "SET SessionId = ?, PaymentIntentId = ?\n"
+                    + "WHERE Id = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setString(1, orderHeader.getSessionId());
+            stmt.setString(2, orderHeader.getPaymentIntentId());
+            stmt.setInt(3, orderHeader.getId());
+            int numberOfAffectedRows = stmt.executeUpdate();
+            if (numberOfAffectedRows == 0) {
+                isSuccess = false;
+            }
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return isSuccess;
+    }
+    
+    public boolean updateOrderStatus(int orderHeaderId, String orderStatus, String paymentStatus) throws NamingException {
+        boolean isSuccess = true;
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "UPDATE dbo.OrderHeaders \n"
+                    + "SET OrderStatus = ?, PaymentStatus = ?, PaymentDate = ?\n"
+                    + "WHERE Id = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setString(1, orderStatus);
+            stmt.setString(2, paymentStatus);
+            Timestamp sqlPaymentDate = new Timestamp((new java.util.Date()).getTime());
+            stmt.setTimestamp(3, sqlPaymentDate);
+            stmt.setInt(4, orderHeaderId);
+            int numberOfAffectedRows = stmt.executeUpdate();
+            if (numberOfAffectedRows == 0) {
                 isSuccess = false;
             }
         } catch (SQLException ex) {

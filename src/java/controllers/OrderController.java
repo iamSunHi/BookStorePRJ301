@@ -8,6 +8,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import dal.CartDAO;
 import dal.OrderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,13 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -77,7 +72,40 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Cart cart = (Cart) session.getAttribute("userCart");
+        OrderHeader orderHeader = (OrderHeader) session.getAttribute("orderHeader");
+
+        Stripe.apiKey = "sk_test_51NjkXOAxrTscRyhpzoowFsvssD1H4ZrXSYcLf4r5G9qbs7dnZ42NLnOZ7b9TWSrapDvSiEceNjgJbFPuesNf8hjp00By8ZPaPn";
+        Session stripeSession = null;
+        try {
+            stripeSession = Session.retrieve(orderHeader.getSessionId());
+        } catch (StripeException ex) {
+            Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        OrderDAO orderDAO = new OrderDAO();
+        if (stripeSession.getPaymentStatus().toLowerCase().equals("paid")) {
+            orderHeader.setPaymentIntentId(stripeSession.getPaymentIntent());
+            try {
+                orderDAO.updateStripePaymentId(orderHeader);
+                orderDAO.updateOrderStatus(orderHeader.getId(), "Approved", "Approved");
+            } catch (NamingException ex) {
+                Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        CartDAO cartDAO = new CartDAO();
+        try {
+            cartDAO.removeAll(cart.getId());
+            Cart userCart = cartDAO.get(cart.getUserId());
+            session.setAttribute("userCart", userCart);
+        } catch (NamingException ex) {
+            Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        session.removeAttribute("orderHeader");
+        response.sendRedirect("orderconfirmation.jsp");
     }
 
     /**
@@ -141,14 +169,18 @@ public class OrderController extends HttpServlet {
                 }
 
                 Session stripeSession = Session.create(params
-                        .setSuccessUrl(domain + "orderconfirmation")
+                        .setSuccessUrl(domain + "order")
                         .setCancelUrl(domain + "summary.jsp")
                         .setMode(SessionCreateParams.Mode.PAYMENT)
                         .build()
                 );
                 orderHeader.setSessionId(stripeSession.getId());
                 orderHeader.setPaymentIntentId(stripeSession.getPaymentIntent());
-                
+
+                orderDAO.updateStripePaymentId(orderHeader);
+
+                session.setAttribute("orderHeader", orderHeader);
+
                 response.sendRedirect(stripeSession.getUrl());
             }
         } catch (NamingException | StripeException ex) {
