@@ -43,7 +43,9 @@ public class OrderDAO {
                     + "    OrderStatus,\n"
                     + "    PaymentStatus,\n"
                     + "    SessionId,\n"
-                    + "    PaymentIntentId\n"
+                    + "    PaymentIntentId,\n"
+                    + "    Phone,\n"
+                    + "    Address\n"
                     + ")\n"
                     + "VALUES\n"
                     + "(   ?,          -- UserId - nvarchar(32)\n"
@@ -53,7 +55,9 @@ public class OrderDAO {
                     + "    ?,          -- OrderStatus - nvarchar(max)\n"
                     + "    ?,          -- PaymentStatus - nvarchar(max)\n"
                     + "    ?,          -- SessionId - nvarchar(max)\n"
-                    + "    ?           -- PaymentIntentId - nvarchar(max)\n"
+                    + "    ?,          -- PaymentIntentId - nvarchar(max)\n"
+                    + "    ?,          -- Phone - nvarchar(20)\n"
+                    + "    ?           -- Address - nvarchar(max)\n"
                     + ")";
             stmt = connection.prepareStatement(SQL);
             stmt.setString(1, orderHeader.getUser().getId());
@@ -67,6 +71,8 @@ public class OrderDAO {
             stmt.setString(6, orderHeader.getPaymentStatus());
             stmt.setString(7, orderHeader.getSessionId());
             stmt.setString(8, orderHeader.getPaymentIntentId());
+            stmt.setString(9, orderHeader.getPhone());
+            stmt.setString(10, orderHeader.getAddress());
 
             int numberOfAffectedRows = stmt.executeUpdate();
             if (numberOfAffectedRows != 0) {
@@ -209,7 +215,7 @@ public class OrderDAO {
 
         return isSuccess;
     }
-    
+
     public boolean updateOrderStatus(int orderHeaderId, String orderStatus, String paymentStatus) throws NamingException {
         boolean isSuccess = true;
 

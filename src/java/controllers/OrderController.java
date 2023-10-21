@@ -131,6 +131,8 @@ public class OrderController extends HttpServlet {
         orderHeader.setPayment("Stripe");
         orderHeader.setOrderStatus("Pending");
         orderHeader.setPaymentStatus("Pending");
+        orderHeader.setPhone(request.getParameter("phone"));
+        orderHeader.setAddress(request.getParameter("address"));
         try {
             int orderHeaderId = orderDAO.createOrderHeader(orderHeader);
             orderHeader.setId(orderHeaderId);
