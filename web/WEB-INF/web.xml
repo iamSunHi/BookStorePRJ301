@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <filter>
+        <filter-name>AuthenFilter</filter-name>
+        <filter-class>filters.AuthenFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenFilter</filter-name>
+        <url-pattern>/cart</url-pattern>
+        <url-pattern>/user</url-pattern>
+        <url-pattern>/order</url-pattern>
+    </filter-mapping>
     <servlet>
         <servlet-name>CategoryController</servlet-name>
         <servlet-class>controllers.CategoryController</servlet-class>
@@ -64,7 +74,6 @@
         <servlet-name>OrderController</servlet-name>
         <url-pattern>/order</url-pattern>
     </servlet-mapping>
-    
     <!-- added for automatic redirect from HTTP to HTTPS -->
     <security-constraint>
         <web-resource-collection>
@@ -75,7 +84,6 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
-    
     <session-config>
         <session-timeout>
             -1

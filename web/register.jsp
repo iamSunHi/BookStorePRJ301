@@ -33,24 +33,19 @@
                             <form id="register" action="identity" method="post">
                                 <input type="hidden" name="type" value="REGISTER">
                                 <div class="user-box">
-                                    <input name="username" type="text">
-                                    <label><i class="fa-solid fa-user"></i> Username</label>
+                                    <input name="username" type="text" placeholder="Username">
                                 </div>
                                 <div class="user-box">
-                                    <input name="fullname" type="text">
-                                    <label>Full Name</label>
+                                    <input name="fullname" type="text" placeholder="Full Name">
                                 </div>
                                 <div class="user-box">
-                                    <input name="email" type="text">
-                                    <label><i class="fa-solid fa-envelope"></i> Email</label>
+                                    <input name="email" type="text" placeholder="Email">
                                 </div>
                                 <div class="user-box">
-                                    <input id="password" name="password" type="password">
-                                    <label><i class="fa-solid fa-lock"></i> Password</label>
+                                    <input id="password" name="password" type="password" placeholder="Password">
                                 </div>
                                 <div class="user-box">
-                                    <input name="confirmpassword" type="password">
-                                    <label><i class="fa-solid fa-lock"></i> Confirm Password</label>
+                                    <input name="confirmpassword" type="password" placeholder="Confirm Password">
                                 </div>
                                 <a href="#" class="w-100">
                                     <span></span>

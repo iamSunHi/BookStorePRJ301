@@ -56,14 +56,17 @@ input:-webkit-autofill:focus {
     padding: 10px 0;
     font-size: 16px;
     color: #fff;
-    margin-bottom: 30px;
     border: none;
     border-bottom: 1px solid #fff;
     outline: none;
     background: transparent;
 }
 
-.login-box .user-box label {
+#login .user-box input {
+    margin-bottom: 30px;
+}
+
+#login .user-box label {
     position: absolute;
     top: 0;
     left: 0;
@@ -74,8 +77,8 @@ input:-webkit-autofill:focus {
     transition: .5s;
 }
 
-.login-box .user-box input:focus ~ label,
-.login-box .user-box input:valid ~ label {
+#login  .user-box input:focus ~ label,
+#login  .user-box input:valid ~ label {
     top: -20px;
     left: 0;
     color: #fff;

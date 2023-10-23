@@ -65,10 +65,6 @@ public class CartController extends HttpServlet {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
 
         String method = request.getParameter("method");
         CartDAO cartDAO = new CartDAO();

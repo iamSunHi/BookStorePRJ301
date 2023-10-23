@@ -30,7 +30,7 @@
                 <div class="col-md-6">
                     <div class="login-box">
                         <p>Login</p>
-                        <form action="identity" method="post">
+                        <form id="login" action="identity" method="post">
                             <input type="hidden" name="type" value="LOGIN">
                             <div class="user-box">
                                 <input required name="username" type="text" value="adminn">
