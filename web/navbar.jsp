@@ -81,9 +81,9 @@
                             <i class="fa-solid fa-magnifying-glass p-2 rounded-circle bg-light text-dark"></i>
                             <input id="searchInput" type="text" class="w-100 border-0 bg-dark mx-2" placeholder="Search something . . ." onkeyup="showSearchResults(this);">
                         </div>
-                        <button class="btn btn-dark rounded-pill">
+                        <%--<button class="btn btn-dark rounded-pill">
                             Search
-                        </button>
+                        </button>--%>
                     </div>
                     <div class="navbar-search__result bg-dark shadow">
                         <div class="text-center py-2">
@@ -197,6 +197,14 @@
                         <li class="menu-item">
                             <a href="account.jsp" id="account" class="btn btn-dark dropdown-item text-uppercase">Account</a>
                         </li>
+                        <% if (!((boolean) session.getAttribute("isAdmin")) && !((boolean) session.getAttribute("isSeller"))) { %>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li class="menu-item">
+                            <a href="" class="btn btn-dark dropdown-item text-uppercase">Register to open sale</a>
+                        </li>
+                        <% } %>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

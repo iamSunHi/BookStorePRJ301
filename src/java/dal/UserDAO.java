@@ -444,7 +444,7 @@ public class UserDAO {
             } while (rs.next());
 
             // Execute SQL and return data results.
-            String SQL = "SELECT Id FROM dbo.Users WHERE Name = N'" + user.getUsername() + "'";
+            String SQL = "SELECT Id FROM dbo.Users WHERE UserName = N'" + user.getUsername() + "'";
             rs = stmt.executeQuery(SQL);
 
             if (!rs.next()) {

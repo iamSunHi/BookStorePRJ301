@@ -25,19 +25,19 @@
     <body>
         <jsp:include page="./navbar.jsp"></jsp:include>
 
-        <main class="container">
-            <div class="row align-items-center justify-content-center" style="min-height: 100vh;">
-                <div class="col-md-6">
-                    <div class="login-box">
-                        <p>Login</p>
-                        <form id="login" action="identity" method="post">
-                            <input type="hidden" name="type" value="LOGIN">
-                            <div class="user-box">
-                                <input required name="username" type="text" value="adminn">
+            <main class="container">
+                <div class="row align-items-center justify-content-center" style="min-height: 100vh;">
+                    <div class="col-md-6">
+                        <div class="login-box">
+                            <p>Login</p>
+                            <form id="login" action="identity" method="post">
+                                <input type="hidden" name="type" value="LOGIN">
+                                <div class="user-box">
+                                    <input required name="username" type="text" value="<%= request.getParameter("username") == null ? "adminn" : request.getParameter("username") %>">
                                 <label><i class="fa-solid fa-user"></i> Username</label>
                             </div>
                             <div class="user-box">
-                                <input required name="password" type="password" value="Bo_29102003">
+                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Bo_29102003" : request.getParameter("password") %>">
                                 <label><i class="fa-solid fa-lock"></i> Password</label>
                             </div>
                             <a href="#" class="w-100">

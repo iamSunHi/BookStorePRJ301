@@ -52,11 +52,9 @@
                                     <h6 class="card-text book-list-item__price"><%= book.getPrice() != 0 ? currencyFormatter.format(book.getPrice()) : "Free" %></h6>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <a href="#" class="w-100 btn btn-secondary">Rent</a>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="#" class="w-100 btn btn-success">Buy</a>
+                                    <div class="">
+                                        <button onclick="confirmAddBook(<%= book.getId() %>)"
+                                                class="w-100 btn btn-success">Add to Cart</button>
                                     </div>
                                 </div>
                             </div>

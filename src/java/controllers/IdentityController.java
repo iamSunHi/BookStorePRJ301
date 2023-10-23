@@ -103,6 +103,10 @@ public class IdentityController extends HttpServlet {
                 try {
                     if (userDAO.register(user)) {
                         user = userDAO.login(request.getParameter("username"), request.getParameter("password"));
+                    } else {
+                        request.setAttribute("error", "Username '" + request.getParameter("username") + "' is existed, please choose another!");
+                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                        return;
                     }
                 } catch (NamingException ex) {
                     Logger.getLogger(IdentityController.class.getName()).log(Level.SEVERE, null, ex);
@@ -123,6 +127,11 @@ public class IdentityController extends HttpServlet {
                             isSeller = true;
                         }
                     }
+                    request.removeAttribute("error");
+                } else {
+                    request.setAttribute("error", "Username or password is wrong!");
+                    request.getRequestDispatcher("login.jsp").forward(request, response);
+                    return;
                 }
                 break;
             }
