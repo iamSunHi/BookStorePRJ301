@@ -33,11 +33,11 @@
                             <form id="login" action="identity" method="post">
                                 <input type="hidden" name="type" value="LOGIN">
                                 <div class="user-box">
-                                    <input required name="username" type="text" value="<%= request.getParameter("username") == null ? "adminn" : request.getParameter("username") %>">
+                                    <input required name="username" type="text" value="<%= request.getParameter("username") == null ? "customer" : request.getParameter("username") %>">
                                 <label><i class="fa-solid fa-user"></i> Username</label>
                             </div>
                             <div class="user-box">
-                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Bo_29102003" : request.getParameter("password") %>">
+                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Customer_12345" : request.getParameter("password") %>">
                                 <label><i class="fa-solid fa-lock"></i> Password</label>
                             </div>
                             <a href="#" class="w-100">
@@ -55,6 +55,25 @@
                             <a href="" class="col-lg-6 btn outline-none shadow-none text-center">
                                 Forgot password?
                             </a>
+                        </div>
+                    </div>
+                    <div class="login-box" style="top:40px; width:200px; padding:8px; transform: none;">
+                        <div>
+                            <h4>Admin account:</h4>
+                            <div class="d-flex justify-content-between">
+                                <h5>adminn</h5>
+                                <h5>Bo_29102003</h5>
+                            </div>
+                            <h4>Seller account:</h4>
+                            <div class="d-flex justify-content-between">
+                                <h5>seller</h5>
+                                <h5>Seller_12345</h5>
+                            </div>
+                            <h4>Customer account:</h4>
+                            <div class="d-flex justify-content-between">
+                                <h5>customer</h5>
+                                <h5>Customer_12345</h5>
+                            </div>
                         </div>
                     </div>
                 </div>

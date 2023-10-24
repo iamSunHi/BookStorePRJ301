@@ -197,7 +197,7 @@
                         <li class="menu-item">
                             <a href="account.jsp" id="account" class="btn btn-dark dropdown-item text-uppercase">Account</a>
                         </li>
-                        <% if (!((boolean) session.getAttribute("isAdmin")) && !((boolean) session.getAttribute("isSeller"))) { %>
+                        <% if (!((boolean) session.getAttribute("isSeller"))) { %>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

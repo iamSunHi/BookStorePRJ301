@@ -9,6 +9,7 @@
         <url-pattern>/cart</url-pattern>
         <url-pattern>/user</url-pattern>
         <url-pattern>/order</url-pattern>
+        <url-pattern>/image</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>CategoryController</servlet-name>
