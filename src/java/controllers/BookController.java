@@ -73,6 +73,8 @@ public class BookController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession();
+
         if (request.getParameter("method") != null) {
             switch (request.getParameter("method")) {
                 case "get": {
@@ -151,7 +153,7 @@ public class BookController extends HttpServlet {
                     BookDAO bookDAO = new BookDAO();
                     {
                         try {
-                            List<Book> bookList = bookDAO.getAll();
+                            List<Book> bookList = bookDAO.getAllByStore((String) session.getAttribute("storeId"));
                             request.setAttribute("bookList", bookList);
                         } catch (NamingException ex) {
                             Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
@@ -206,8 +208,6 @@ public class BookController extends HttpServlet {
             Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        HttpSession session = request.getSession();
-
         if (session.getAttribute("numberOfPage") == null) {
             int numberOfPage = 0;
             try {
@@ -254,6 +254,8 @@ public class BookController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession();
+
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String categoryList[] = request.getParameterValues("category");
@@ -288,25 +290,30 @@ public class BookController extends HttpServlet {
         switch (method) {
             case "add": {
                 try {
-                    if (bookDAO.create(book)) {
+                    book = bookDAO.create(book, (String) session.getAttribute("storeId"));
+                    if (book.getId() != 0) {
                         request.setAttribute("error", null);
-                        String msg = "Add successful! Please add book's image later!";
+                        String msg = "Add successful! Please add book's image!";
                         request.setAttribute("success", msg);
+
+                        request.setAttribute("Book", book);
+                        request.getRequestDispatcher("seller/bookupsert.jsp").forward(request, response);
                     } else {
                         request.setAttribute("success", null);
-                        String msg = "Add failed!";
+                        String msg = "Add failed because this book has existed!";
                         request.setAttribute("error", msg);
+
+                        try {
+                            List<Book> bookList = bookDAO.getAll();
+                            request.setAttribute("bookList", bookList);
+                        } catch (NamingException ex) {
+                            Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        request.getRequestDispatcher("seller/booklist.jsp").forward(request, response);
                     }
                 } catch (NamingException ex) {
                     Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                try {
-                    List<Book> bookList = bookDAO.getAll();
-                    request.setAttribute("bookList", bookList);
-                } catch (NamingException ex) {
-                    Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                request.getRequestDispatcher("seller/booklist.jsp").forward(request, response);
                 return;
             }
             case "update": {
@@ -323,12 +330,13 @@ public class BookController extends HttpServlet {
                 } catch (NamingException ex) {
                     Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                List<Book> bookList = null;
                 try {
-                    List<Book> bookList = bookDAO.getAll();
-                    request.setAttribute("bookList", bookList);
+                    bookList = bookDAO.getAllByStore((String) session.getAttribute("storeId"));
                 } catch (NamingException ex) {
                     Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                request.setAttribute("bookList", bookList);
                 request.getRequestDispatcher("seller/booklist.jsp").forward(request, response);
             }
 

@@ -33,11 +33,11 @@
                             <form id="login" action="identity" method="post">
                                 <input type="hidden" name="type" value="LOGIN">
                                 <div class="user-box">
-                                    <input required name="username" type="text" value="<%= request.getParameter("username") == null ? "customer" : request.getParameter("username") %>">
+                                    <input required name="username" type="text" value="<%= request.getParameter("username") == null ? "adminn" : request.getParameter("username") %>">
                                 <label><i class="fa-solid fa-user"></i> Username</label>
                             </div>
                             <div class="user-box">
-                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Customer_12345" : request.getParameter("password") %>">
+                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Bo_29102003" : request.getParameter("password") %>">
                                 <label><i class="fa-solid fa-lock"></i> Password</label>
                             </div>
                             <a href="#" class="w-100">
@@ -52,7 +52,7 @@
                             <a href="register.jsp" class="col-lg-6 btn outline-none shadow-none text-center">
                                 Don't have an account yet?
                             </a>
-                            <a href="" class="col-lg-6 btn outline-none shadow-none text-center">
+                            <a href="#" class="col-lg-6 btn outline-none shadow-none text-center">
                                 Forgot password?
                             </a>
                         </div>

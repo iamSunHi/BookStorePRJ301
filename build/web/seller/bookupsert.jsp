@@ -27,9 +27,12 @@
         <link rel="stylesheet" href="assets/css/navbar.css">
     </head>
     <body>
-        <% if (!((boolean) session.getAttribute("isAdmin")) && !((boolean) session.getAttribute("isSeller"))) { 
-            response.sendRedirect("../accessdenied.jsp");
-            return;
+        <% if (
+                ((session.getAttribute("isAdmin") == null || session.getAttribute("isSeller") == null)
+                || !((boolean) session.getAttribute("isAdmin")) && !((boolean) session.getAttribute("isSeller")))
+            ) { 
+                response.sendRedirect("../accessdenied.jsp");
+                return;
         } %>
         
         <% 
@@ -51,7 +54,7 @@
                         <div class="row g-0 align-items-center">
                         <% if (request.getAttribute("Book") != null) { %>
                         <div class="col-md-4">
-                            <img alt="<%= ((Book)request.getAttribute("Book")).getTitle() %>" src="assets/img/books/<%= ((Book)request.getAttribute("Book")).getImageUrl() %>"
+                            <img alt="<%= ((Book)request.getAttribute("Book")).getTitle() %>" src="assets/img/books/<%= ((Book)request.getAttribute("Book")).getImageUrl() == null || ((Book)request.getAttribute("Book")).getImageUrl().equals("") ? "default.jfif" : ((Book)request.getAttribute("Book")).getImageUrl() %>"
                                  class="img-fluid rounded w-100">
                             <button type="button" class="btn btn-outline-light mt-1 w-100" data-bs-toggle="modal"
                                     data-bs-target="#uploadImage">Change Image</button>
@@ -131,7 +134,7 @@
                                                placeholder="Publication year" value="<%= request.getAttribute("Book") == null ? "" : ((Book)request.getAttribute("Book")).getYearOfPublication() %>">
                                         <label for="publication-year">Publication year</label>
                                     </div>
-                                    <button class="btn btn-outline-success w-100 text-uppercase"><%= request.getAttribute("Book") == null ? "Add" : "Save" %></button>
+                                    <button id="addSaveButton" class="btn btn-outline-success w-100 text-uppercase"><%= request.getAttribute("Book") == null ? "Add" : "Save" %></button>
                                 </form>
                             </div>
                         </div>
@@ -223,8 +226,30 @@
                                                             }
                                                         }
                                                         category.classList.toggle('active');
+                                                        checkCategoryListAndDisableButton();
                                                     }
         </script>
+        <script>
+            // Function to check if the category list is empty and disable the button
+            function checkCategoryListAndDisableButton() {
+                const selectedCategoryList = document.querySelector('.selected-category-list');
+                const addSaveButton = document.getElementById('addSaveButton');
+        
+                // Check if the selected category list is empty or null
+                if (!selectedCategoryList || selectedCategoryList.children.length === 0) {
+                    addSaveButton.disabled = true;
+                } else {
+                    addSaveButton.disabled = false;
+                }
+            }
+        
+            // Call the function initially
+            checkCategoryListAndDisableButton();
+        
+            // Hook up the function to events that may change the category list
+            // For example, you can call this function whenever you add or remove a category.
+        </script>
+        
     </body>
 
 </html>

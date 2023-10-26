@@ -24,6 +24,43 @@ public class StoreDAO {
     private PreparedStatement stmt = null;
     private ResultSet rs = null;
 
+    public String getStoreId(String userId) throws NamingException {
+        String storeId = null;
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "SELECT Id FROM dbo.Stores WHERE UserId = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setString(1, userId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                storeId = rs.getString("Id");
+            }
+
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return storeId;
+    }
+
     public List<Store> getAll() throws NamingException {
         List<Store> storeList = new ArrayList<>();
 

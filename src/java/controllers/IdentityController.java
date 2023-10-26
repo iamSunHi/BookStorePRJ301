@@ -5,6 +5,7 @@
 package controllers;
 
 import dal.CartDAO;
+import dal.StoreDAO;
 import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -125,6 +126,12 @@ public class IdentityController extends HttpServlet {
                             isAdmin = true;
                         } else if (role.getName().toLowerCase().equals("seller")) {
                             isSeller = true;
+                            StoreDAO storeDAO = new StoreDAO();
+                            try {
+                                session.setAttribute("storeId", storeDAO.getStoreId(user.getId()));
+                            } catch (NamingException ex) {
+                                Logger.getLogger(IdentityController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     }
                     request.removeAttribute("error");

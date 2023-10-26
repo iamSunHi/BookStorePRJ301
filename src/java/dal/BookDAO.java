@@ -205,6 +205,77 @@ public class BookDAO {
         return bookList;
     }
 
+    public List<Book> getAllByStore(String storeId) throws NamingException {
+        List<Book> bookList = new ArrayList<>();
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "SELECT * FROM dbo.Books\n"
+                    + "JOIN dbo.BookStore ON BookStore.BooksId = Books.Id\n"
+                    + "JOIN dbo.CoverTypes ON CoverTypes.Id = Books.CoverTypeId\n"
+                    + "WHERE StoresId = ?\n";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setString(1, storeId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setId(rs.getInt("Id"));
+                book.setTitle(rs.getString("Title"));
+                book.setDescription(rs.getString("Description"));
+                book.setCoverType(new CoverType(rs.getInt("CoverTypeId"), rs.getString("Name")));
+                book.setAuthor(rs.getString("Author"));
+                book.setPrice(rs.getDouble("Price"));
+                book.setPublisher(rs.getString("Publisher"));
+                book.setYearOfPublication(rs.getInt("YearOfPublication"));
+                book.setImageUrl(rs.getString("ImageUrl"));
+
+                book.setCategories(new ArrayList<>());
+
+                bookList.add(book);
+            }
+
+            for (Book book : bookList) {
+
+                // Add Category(s)
+                SQL = "SELECT CategoriesId, Name\n"
+                        + "FROM dbo.BookCategory JOIN dbo.Categories ON Categories.Id = BookCategory.CategoriesId\n"
+                        + "WHERE BooksId = ?";
+                stmt = connection.prepareStatement(SQL);
+                stmt.setInt(1, book.getId());
+                rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    Category category = new Category();
+                    category.setId(rs.getInt("CategoriesId"));
+                    category.setName(rs.getString("Name"));
+                    book.getCategories().add(category);
+                }
+            }
+
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return bookList;
+    }
+
     public List<Book> search(String searchContent) throws NamingException {
         List<Book> bookList = new ArrayList<>();
 
@@ -355,9 +426,7 @@ public class BookDAO {
         return bookList;
     }
 
-    public boolean create(Book book) throws NamingException {
-        boolean isSuccess = true;
-
+    public Book create(Book book, String storeId) throws NamingException {
         try {
             // Get connection.
             connection = DatabaseConfig.getConnection();
@@ -403,29 +472,46 @@ public class BookDAO {
                 stmt.setString(8, "default.jfif");
 
                 if (stmt.executeUpdate() != 0) {
-                    for (Category category : book.getCategories()) {
-                        SQL = "INSERT INTO dbo.BookCategory\n"
+                    SQL = "SELECT Id FROM dbo.Books WHERE Title = ? AND Author = ?";
+                    stmt = connection.prepareStatement(SQL);
+                    stmt.setString(1, book.getTitle());
+                    stmt.setString(2, book.getAuthor());
+                    rs = stmt.executeQuery();
+
+                    if (rs.next()) {
+                        book.setId(rs.getInt("Id"));
+                        
+                        for (Category category : book.getCategories()) {
+                            SQL = "INSERT INTO dbo.BookCategory\n"
+                                    + "(\n"
+                                    + "    BooksId,\n"
+                                    + "    CategoriesId\n"
+                                    + ")\n"
+                                    + "VALUES\n"
+                                    + "(   ?, -- BooksId - int\n"
+                                    + "    (SELECT Id FROM dbo.Categories WHERE Name =?)  -- CategoriesId - int\n"
+                                    + ")";
+                            stmt = connection.prepareStatement(SQL);
+                            stmt.setInt(1, book.getId());
+                            stmt.setString(2, category.getName());
+                            stmt.executeUpdate();
+                        }
+
+                        SQL = "INSERT INTO dbo.BookStore\n"
                                 + "(\n"
                                 + "    BooksId,\n"
-                                + "    CategoriesId\n"
+                                + "    StoresId\n"
                                 + ")\n"
                                 + "VALUES\n"
-                                + "(   (SELECT Id FROM dbo.Books WHERE Title = ? AND Author = ?), -- BooksId - int\n"
-                                + "    (SELECT Id FROM dbo.Categories WHERE Name =?)  -- CategoriesId - int\n"
+                                + "(   ?, -- BooksId - int\n"
+                                + "    ?  -- StoresId - nvarchar(32)\n"
                                 + ")";
                         stmt = connection.prepareStatement(SQL);
-                        stmt.setString(1, book.getTitle());
-                        stmt.setString(2, book.getAuthor());
-                        stmt.setString(3, category.getName());
-                        if (stmt.executeUpdate() == 0) {
-                            isSuccess = false;
-                        }
+                        stmt.setInt(1, book.getId());
+                        stmt.setString(2, storeId);
+                        stmt.executeUpdate();
                     }
-                } else {
-                    isSuccess = false;
                 }
-            } else {
-                isSuccess = false;
             }
         } catch (SQLException ex) {
         } finally {
@@ -444,7 +530,7 @@ public class BookDAO {
             }
         }
 
-        return isSuccess;
+        return book;
     }
 
     public boolean update(Book book) throws NamingException {
