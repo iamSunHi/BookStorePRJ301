@@ -10,6 +10,7 @@
         <url-pattern>/user</url-pattern>
         <url-pattern>/order</url-pattern>
         <url-pattern>/image</url-pattern>
+        <url-pattern>/store</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>CategoryController</servlet-name>
@@ -42,6 +43,10 @@
     <servlet>
         <servlet-name>OrderController</servlet-name>
         <servlet-class>controllers.OrderController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StoreController</servlet-name>
+        <servlet-class>controllers.StoreController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CategoryController</servlet-name>
@@ -85,6 +90,10 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+    <servlet-mapping>
+        <servlet-name>StoreController</servlet-name>
+        <url-pattern>/store</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             -1

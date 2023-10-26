@@ -1,7 +1,7 @@
 <%-- 
-    Document   : register
-    Created on : Sep 22, 2023, 7:44:39 PM
-    Author     : Nhật Huy
+    Document   : storeregister
+    Created on : Oct 24, 2023, 9:02:22 PM
+    Author     : Sun Hi
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,30 +22,26 @@
         <link rel="stylesheet" href="assets/css/login.css">
     </head>
 
-    <body>
+    <body style="background:url(assets/img/store.jpg);">
         <jsp:include page="./navbar.jsp"></jsp:include>
 
             <main class="container">
                 <div class="row align-items-center justify-content-center position-relative" style="min-height: calc(100vh - 60px); margin-top: 60px;">
                     <div class="col-md-6">
                         <div class="login-box">
-                            <p>Register</p>
-                            <form id="register" action="identity" method="post">
-                                <input type="hidden" name="type" value="REGISTER">
+                            <p>Store Register</p>
+                            <form id="shopregister" action="store?method=register" method="post">
                                 <div class="user-box">
-                                    <input name="username" type="text" placeholder="Username">
-                                </div>
-                                <div class="user-box">
-                                    <input name="fullname" type="text" placeholder="Full Name">
+                                    <input name="name" type="text" placeholder="Shop Name">
                                 </div>
                                 <div class="user-box">
                                     <input name="email" type="email" placeholder="Email">
                                 </div>
                                 <div class="user-box">
-                                    <input id="password" name="password" type="password" placeholder="Password">
+                                    <input name="phone" type="text" placeholder="Phone">
                                 </div>
                                 <div class="user-box">
-                                    <input name="confirmpassword" type="password" placeholder="Confirm Password">
+                                    <input name="address" type="text" placeholder="Address">
                                 </div>
                                 <a href="#" class="w-100">
                                     <span></span>
@@ -55,11 +51,6 @@
                                     <button class="btn text-uppercase fw-semibold w-100">Register</button>
                                 </a>
                             </form>
-                            <div class="">
-                                <a href="login.jsp" class="btn outline-none shadow-none text-center w-100">
-                                    Have an account?
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>

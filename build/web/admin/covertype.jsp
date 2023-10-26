@@ -21,10 +21,14 @@
               crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <link rel="stylesheet" href="assets/css/navbar.css">
-        <link rel="stylesheet" href="assets/css/home.css">
     </head>
 
     <body>
+        <% if (!((boolean) session.getAttribute("isAdmin"))) { 
+            response.sendRedirect("../accessdenied.jsp");
+            return;
+        } %>
+        
         <jsp:include page="../navbar.jsp"></jsp:include>
 
             <main class="container" style="margin-top: 60px;">

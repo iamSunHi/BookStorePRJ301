@@ -27,6 +27,11 @@
         <link rel="stylesheet" href="assets/css/navbar.css">
     </head>
     <body>
+        <% if (!((boolean) session.getAttribute("isAdmin")) && !((boolean) session.getAttribute("isSeller"))) { 
+            response.sendRedirect("../accessdenied.jsp");
+            return;
+        } %>
+        
         <% 
             List<Category> categoryList = (List<Category>) session.getAttribute("Categories");
             List<CoverType> coverTypeList = (List<CoverType>) session.getAttribute("CoverTypes");

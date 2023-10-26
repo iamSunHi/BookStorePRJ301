@@ -39,7 +39,7 @@
                                     <input name="fullname" type="text" placeholder="Full Name">
                                 </div>
                                 <div class="user-box">
-                                    <input name="email" type="text" placeholder="Email">
+                                    <input name="email" type="email" placeholder="Email">
                                 </div>
                                 <div class="user-box">
                                     <input id="password" name="password" type="password" placeholder="Password">

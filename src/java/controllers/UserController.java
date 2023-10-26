@@ -184,11 +184,11 @@ public class UserController extends HttpServlet {
                                 oldImage.delete();
                             }
                         }
-                        request.setAttribute("error", null);
+                        request.removeAttribute("error");
                         String msg = "Delete user successful!";
                         request.setAttribute("success", msg);
                     } else {
-                        request.setAttribute("success", null);
+                        request.removeAttribute("success");
                         String msg = "Delete failed!";
                         request.setAttribute("error", msg);
                     }

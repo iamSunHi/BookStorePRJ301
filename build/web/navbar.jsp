@@ -60,7 +60,7 @@
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="user?method=getall">Users</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Pending Confirmation</a></li>
+                        <li><a class="dropdown-item" href="store?type=notverified">Pending Confirmation</a></li>
                     </ul>
                 </li>
                 <% } else if (session.getAttribute("isSeller") != null && (boolean) session.getAttribute("isSeller")) { %>
@@ -202,7 +202,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li class="menu-item">
-                            <a href="" class="btn btn-dark dropdown-item text-uppercase">Register to open sale</a>
+                            <a href="storeregister.jsp" class="btn btn-dark dropdown-item text-uppercase">Register to open sale</a>
                         </li>
                         <% } %>
                         <li>

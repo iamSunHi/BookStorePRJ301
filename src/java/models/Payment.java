@@ -5,7 +5,6 @@
 package models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  *
@@ -14,6 +13,4 @@ import java.util.ArrayList;
 public class Payment implements Serializable {
     private int id;
     private int name;
-    
-    private ArrayList<Store> storesList;
 }

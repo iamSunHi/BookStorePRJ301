@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<footer class="footer text-muted">
+<footer class="footer text-muted mt-2">
     <div class="container text-white-50 text-center">
         Made with <i class="fa-solid fa-heart"></i> by
         <a class="link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"

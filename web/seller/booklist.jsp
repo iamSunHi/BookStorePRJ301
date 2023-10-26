@@ -26,6 +26,11 @@
     </head>
 
     <body>
+        <% if (!((boolean) session.getAttribute("isAdmin")) && !((boolean) session.getAttribute("isSeller"))) { 
+            response.sendRedirect("../accessdenied.jsp");
+            return;
+        } %>
+        
         <jsp:include page="../navbar.jsp"></jsp:include>
 
             <main class="container pb-3" style="margin-top: 60px;">

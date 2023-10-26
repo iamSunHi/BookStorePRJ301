@@ -4,6 +4,7 @@
 <%@page import="models.Book" %>
 <%@page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:useBean id="bookList" class="java.util.ArrayList" scope="session">
     <jsp:setProperty name="bookList" property="*"></jsp:setProperty>
 </jsp:useBean>
@@ -32,6 +33,7 @@
         </c:if>
         <jsp:include page="navbar.jsp"></jsp:include>
 
+        <fmt:setLocale value = "en_US"/>
             <main class="container pb-3" style="margin-top: 60px;">
                 <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel" style="animation: slideDown 1s ease-in;">
                     <div class="carousel-inner py-5">
@@ -67,9 +69,7 @@
                         </div>
                     </div>
                 </div>
-
-
-
+                
                 <div class="row book-list">
                 <c:forEach var="book" items="${bookList}">
                     <div class="col-12 col-md-6 col-lg-3 book-list-item my-2">
@@ -89,10 +89,10 @@
                                             </i>
                                         </h6>
                                         <h6 class="card-text book-list-item__price">
+                                            
                                             <c:choose>
                                                 <c:when test="${book.getPrice() > 0}">
-                                                    <fmt:formatNumber value="${book.getPrice()}"
-                                                                      type="currency" />
+                                                    <fmt:formatNumber value="${book.getPrice()}" type="currency" />
                                                 </c:when>
                                                 <c:otherwise>
                                                     Free

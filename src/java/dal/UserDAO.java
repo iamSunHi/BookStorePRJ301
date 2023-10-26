@@ -342,8 +342,14 @@ public class UserDAO {
             if (rs.next()) {
                 imageUrl = rs.getString("ImageUrl");
             }
-            SQL = "DELETE FROM dbo.Users WHERE Id = '" + userId + "'";
+            
+            SQL = "DELETE FROM dbo.Stores WHERE UserId = '" + userId + "'";
             stmt.executeUpdate(SQL);
+            SQL = "DELETE FROM dbo.Users WHERE Id = '" + userId + "'";
+            int numberOfAffectedRows = stmt.executeUpdate(SQL);
+            if (numberOfAffectedRows == 0) {
+                imageUrl = "";
+            }
 
         } catch (SQLException ex) {
         } finally {

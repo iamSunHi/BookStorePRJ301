@@ -54,6 +54,38 @@ $().ready(function () {
             },
         },
     });
+    
+    $("#shopregister").validate({
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        rules: {
+            name: {
+                required: true,
+                rangelength: [6, 50],
+            },
+            email: {
+                email: true,
+            },
+            phone: {
+                required: true,
+            },
+            address: {
+                required: true,
+            }
+        },
+        messages: {
+            name: {
+                required: "The Shop Name field is required!",
+            },
+            phone: {
+                required: "The Phone field is required!",
+            },
+            address: {
+                required: "The Address field is required!",
+            }
+        },
+    });
 
     $("#personal-info").validate({
         onfocusout: false,
