@@ -290,21 +290,28 @@ public class UserDAO {
         return isSuccess;
     }
 
-    public boolean updateLoginInfo(User user) throws NamingException {
+    public boolean updateLoginInfo(String oldPassword, User user) throws NamingException {
         boolean isSuccess = true;
         try {
             // Get connection.
             connection = DatabaseConfig.getConnection();
 
             // Execute SQL and return data results.
-            String SQL = "UPDATE dbo.Users SET\n"
-                    + "Password = '" + hashPassword(user.getPassword()) + "'\n"
-                    + "WHERE Id = '" + user.getId() + "'";
+            String SQL = "SELECT Id FROM dbo.Users WHERE Password = '" + hashPassword(oldPassword) + "'";
             stmt = connection.createStatement();
             rs = stmt.executeQuery(SQL);
-
             if (!rs.next()) {
                 isSuccess = false;
+            } else {
+                SQL = "UPDATE dbo.Users SET\n"
+                        + "Password = '" + hashPassword(user.getPassword()) + "'\n"
+                        + "WHERE Id = '" + user.getId() + "'";
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(SQL);
+
+                if (!rs.next()) {
+                    isSuccess = false;
+                }
             }
 
         } catch (SQLException ex) {
@@ -342,7 +349,7 @@ public class UserDAO {
             if (rs.next()) {
                 imageUrl = rs.getString("ImageUrl");
             }
-            
+
             SQL = "DELETE FROM dbo.Stores WHERE UserId = '" + userId + "'";
             stmt.executeUpdate(SQL);
             SQL = "DELETE FROM dbo.Users WHERE Id = '" + userId + "'";

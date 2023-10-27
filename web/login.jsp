@@ -37,7 +37,7 @@
                                 <label><i class="fa-solid fa-user"></i> Username</label>
                             </div>
                             <div class="user-box">
-                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Bo_29102003" : request.getParameter("password") %>">
+                                <input required name="password" type="password" value="<%= request.getParameter("password") == null ? "Admin_12345" : request.getParameter("password") %>">
                                 <label><i class="fa-solid fa-lock"></i> Password</label>
                             </div>
                             <a href="#" class="w-100">
@@ -62,7 +62,7 @@
                             <h4>Admin account:</h4>
                             <div class="d-flex justify-content-between">
                                 <h5>adminn</h5>
-                                <h5>Bo_29102003</h5>
+                                <h5>Admin_12345</h5>
                             </div>
                             <h4>Seller account:</h4>
                             <div class="d-flex justify-content-between">

@@ -202,7 +202,7 @@ public class OrderController extends HttpServlet {
 
                 Session stripeSession = Session.create(params
                         .setSuccessUrl(domain + "order")
-                        .setCancelUrl(domain + "summary.jsp")
+                        .setCancelUrl(domain + "order?method=history")
                         .setMode(SessionCreateParams.Mode.PAYMENT)
                         .build()
                 );
@@ -213,6 +213,14 @@ public class OrderController extends HttpServlet {
 
                 session.setAttribute("orderHeader", orderHeader);
 
+                CartDAO cartDAO = new CartDAO();
+                try {
+                    cartDAO.removeAll(cart.getId());
+                    Cart userCart = cartDAO.get(cart.getUserId());
+                    session.setAttribute("userCart", userCart);
+                } catch (NamingException ex) {
+                    Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 response.sendRedirect(stripeSession.getUrl());
             }
         } catch (NamingException | StripeException ex) {

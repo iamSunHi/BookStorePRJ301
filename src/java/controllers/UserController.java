@@ -128,7 +128,7 @@ public class UserController extends HttpServlet {
             case "login":
                 user.setPassword(request.getParameter("newpassword"));
                 try {
-                    isSuccess = userDAO.updateLoginInfo(user);
+                    isSuccess = userDAO.updateLoginInfo(request.getParameter("oldpassword"), user);
                 } catch (NamingException ex) {
                     Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -214,7 +214,7 @@ public class UserController extends HttpServlet {
             request.setAttribute("success", msg);
         } else {
             request.setAttribute("success", null);
-            String msg = "Update failed!";
+            String msg = "Update failed! Something is wrong!";
             request.setAttribute("error", msg);
         }
 
