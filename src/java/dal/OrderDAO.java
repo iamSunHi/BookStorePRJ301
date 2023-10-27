@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import javax.naming.NamingException;
 import models.Book;
 import models.OrderDetail;
@@ -25,6 +27,122 @@ public class OrderDAO {
     private Connection connection = null;
     private PreparedStatement stmt = null;
     private ResultSet rs = null;
+
+    public List<OrderHeader> getAllByUserId(String userId) throws NamingException {
+        List<OrderHeader> orderList = new ArrayList<>();
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "SELECT * FROM dbo.OrderHeaders WHERE UserId = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setString(1, userId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OrderHeader order = new OrderHeader();
+                order.setId(rs.getInt("Id"));
+                order.setPayment(rs.getString("Payment"));
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setPaymentDate(rs.getTimestamp("PaymentDate"));
+                order.setOrderStatus(rs.getString("OrderStatus"));
+                order.setPaymentStatus(rs.getString("PaymentStatus"));
+                order.setPhone(rs.getString("Phone"));
+                order.setAddress(rs.getString("Address"));
+
+                orderList.add(order);
+            }
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return orderList;
+    }
+
+    public OrderDetail getOrder(int orderId) throws NamingException {
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setBooks(new ArrayList<>());
+
+        try {
+            // Get connection.
+            connection = DatabaseConfig.getConnection();
+
+            // Execute SQL and return data results.
+            String SQL = "SELECT * FROM dbo.OrderHeaders WHERE Id = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setInt(1, orderId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                OrderHeader order = new OrderHeader();
+                order.setId(rs.getInt("Id"));
+                order.setPayment(rs.getString("Payment"));
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setPaymentDate(rs.getTimestamp("PaymentDate"));
+                order.setOrderStatus(rs.getString("OrderStatus"));
+                order.setPaymentStatus(rs.getString("PaymentStatus"));
+                order.setPhone(rs.getString("Phone"));
+                order.setAddress(rs.getString("Address"));
+
+                orderDetail.setOrderHeader(order);
+            }
+            
+            SQL = "SELECT BooksId FROM dbo.OrderDetails JOIN dbo.BookOrderDetail ON BookOrderDetail.OrderDetailsId = OrderDetails.Id\n"
+                    + "WHERE OrderHeaderId = ?";
+            stmt = connection.prepareStatement(SQL);
+            stmt.setInt(1, orderId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int bookId = rs.getInt("BooksId");
+                SQL = "SELECT Title, Author, Price, ImageUrl FROM dbo.Books WHERE Id = ?";
+                stmt = connection.prepareStatement(SQL);
+                stmt.setInt(1, bookId);
+                ResultSet rs_temp = stmt.executeQuery();
+                if (rs_temp.next()) {
+                    Book book = new Book();
+                    book.setTitle(rs_temp.getString("Title"));
+                    book.setAuthor(rs_temp.getString("Author"));
+                    book.setPrice(rs_temp.getDouble("Price"));
+                    book.setImageUrl(rs_temp.getString("ImageUrl"));
+
+                    orderDetail.getBooks().add(book);
+                }
+            }
+        } catch (SQLException ex) {
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+
+        return orderDetail;
+    }
 
     public int createOrderHeader(OrderHeader orderHeader) throws NamingException, ParseException {
         int orderHeaderId = 0;

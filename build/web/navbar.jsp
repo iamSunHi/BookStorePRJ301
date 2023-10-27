@@ -197,6 +197,12 @@
                         <li class="menu-item">
                             <a href="account.jsp" id="account" class="btn btn-dark dropdown-item text-uppercase">Account</a>
                         </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li class="menu-item">
+                            <a href="order?method=history" class="btn btn-dark dropdown-item text-uppercase">Order History</a>
+                        </li>
                         <% if (!((boolean) session.getAttribute("isSeller"))) { %>
                         <li>
                             <hr class="dropdown-divider">

@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -73,6 +74,35 @@ public class OrderController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        OrderDAO orderDAO = new OrderDAO();
+
+        if (request.getParameter("method") != null) {
+            String method = request.getParameter("method");
+            switch (method) {
+                case "history": {
+                    try {
+                        List<OrderHeader> orderList = orderDAO.getAllByUserId(((User) session.getAttribute("user")).getId());
+                        request.setAttribute("orderList", orderList);
+                    } catch (NamingException ex) {
+                        Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    request.getRequestDispatcher("orderhistory.jsp").forward(request, response);
+                    return;
+                }
+                case "orderdetail": {
+                    OrderDetail orderDetail = null;
+                    try {
+                        orderDetail = orderDAO.getOrder(Integer.parseInt(request.getParameter("orderId")));
+                    } catch (NamingException ex) {
+                        Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    request.setAttribute("orderDetail", orderDetail);
+                    request.getRequestDispatcher("orderdetail.jsp").forward(request, response);
+                    return;
+                }
+
+            }
+        }
         Cart cart = (Cart) session.getAttribute("userCart");
         OrderHeader orderHeader = (OrderHeader) session.getAttribute("orderHeader");
 
@@ -84,7 +114,6 @@ public class OrderController extends HttpServlet {
             Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        OrderDAO orderDAO = new OrderDAO();
         if (stripeSession.getPaymentStatus().toLowerCase().equals("paid")) {
             orderHeader.setPaymentIntentId(stripeSession.getPaymentIntent());
             try {
@@ -94,7 +123,7 @@ public class OrderController extends HttpServlet {
                 Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         CartDAO cartDAO = new CartDAO();
         try {
             cartDAO.removeAll(cart.getId());
@@ -104,8 +133,9 @@ public class OrderController extends HttpServlet {
             Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        request.setAttribute("orderId", orderHeader.getId());
         session.removeAttribute("orderHeader");
-        response.sendRedirect("orderconfirmation.jsp");
+        request.getRequestDispatcher("orderconfirmation.jsp").forward(request, response);
     }
 
     /**

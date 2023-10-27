@@ -12,11 +12,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/web/login.jsp</file>
-            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/src/java/controllers/BookController.java</file>
-            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/src/java/dal/BookDAO.java</file>
-            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/web/seller/booklist.jsp</file>
-            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/web/seller/bookupsert.jsp</file>
+            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/web/orderhistory.jsp</file>
+            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/src/java/controllers/OrderController.java</file>
+            <file>file:/E:/Syllabuses/PRJ301/Project/SunHiBookstore/src/java/dal/OrderDAO.java</file>
         </group>
     </open-files>
 </project-private>

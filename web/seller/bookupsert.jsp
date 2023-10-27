@@ -62,7 +62,7 @@
                         <% } %>
                         <div class="<%= request.getAttribute("Book") == null ? "col-md-12" : "col-md-8"%>">
                             <div class="card-body">
-                                <form class="" method="post" action="book?method=<%= request.getAttribute("Book") == null ? "add" : "update" %>">
+                                <form id="" method="post" action="book?method=<%= request.getAttribute("Book") == null ? "add" : "update" %>">
                                     <input type="hidden" name="id" class="form-control" value="<%= request.getAttribute("Book") == null ? "" : ((Book)request.getAttribute("Book")).getId() %>">
                                     <div class="form-floating mb-3">
                                         <input type="text" name="title" class="form-control" id="title" placeholder="Title"

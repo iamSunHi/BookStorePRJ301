@@ -113,7 +113,7 @@
                                                             <span>
                                                                 Author: <i><%= book.getAuthor() %></i>
                                                             </span>
-                                                            <span style="color:#ee4d2d;"><%= book.getPrice() != 0 ? currencyFormatter.format(book.getPrice()) : "Free" %></span>
+                                                            <span style="color:#ee4d2d; margin-right:4px;"><%= book.getPrice() != 0 ? currencyFormatter.format(book.getPrice()) : "Free" %></span>
                                                         </div>
                                                     </div>
                                                 </li>
