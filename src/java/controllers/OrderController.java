@@ -180,7 +180,7 @@ public class OrderController extends HttpServlet {
             if (orderDAO.createOrderDetail(orderDetail)) {
                 // Configuration for Stripe
                 String domain = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-                Stripe.apiKey = "sk_test_51NjkXOAxrTscRyhpzoowFsvssD1H4ZrXSYcLf4r5G9qbs7dnZ42NLnOZ7b9TWSrapDvSiEceNjgJbFPuesNf8hjp00By8ZPaPn";
+                Stripe.apiKey = "...";
 
                 SessionCreateParams.Builder params = SessionCreateParams.builder();
                 for (Book book : orderDetail.getBooks()) {
