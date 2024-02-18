@@ -2,6 +2,6 @@
 <Context path="/SunHiBookstore">
 <Resource name="jdbc/BookstoreDB" auth="Container" type="javax.sql.DataSource"
           maxTotal="100" maxIdle="30" maxWaitMillis="10000"
-          username="sunhi" password="Bo29102003" driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+          username="..." password="..." driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
           url="jdbc:sqlserver://localhost:1433;databaseName=Bookstore;trustServerCertificate=true"/>
 </Context>
