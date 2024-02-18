@@ -106,7 +106,7 @@ public class OrderController extends HttpServlet {
         Cart cart = (Cart) session.getAttribute("userCart");
         OrderHeader orderHeader = (OrderHeader) session.getAttribute("orderHeader");
 
-        Stripe.apiKey = "sk_test_51NjkXOAxrTscRyhpzoowFsvssD1H4ZrXSYcLf4r5G9qbs7dnZ42NLnOZ7b9TWSrapDvSiEceNjgJbFPuesNf8hjp00By8ZPaPn";
+        Stripe.apiKey = "...";
         Session stripeSession = null;
         try {
             stripeSession = Session.retrieve(orderHeader.getSessionId());
